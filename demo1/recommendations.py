@@ -185,3 +185,36 @@ def calculateSimilarItems(prefs, n=10):
         scores = topMatches(itemPrefs, item, n=n, similarity=sim_distance)
         result[item] = scores
     return result
+
+
+def getRecommendedItems(prefs, itemMatch, user):
+    userRatings = prefs[user]
+    scores = {}
+    totalSim = {}
+
+    # 循环遍历由当前用户评分的物品
+    for (item, rating) in userRatings.items():
+
+        # 循环遍历与当前物品相近的物品
+        for (similarity, item2) in itemMatch[item]:
+
+            # 如果该用户已经对当前物品做过评价，则将其忽略
+            if item2 in userRatings:
+                continue
+
+            # 评价值与相似度的加权之和
+            scores.setdefault(item2, 0)
+            scores[item2] += similarity * rating
+
+            # 全部相似度之和
+            totalSim.setdefault(item2, 0)
+            totalSim[item2] += similarity
+
+    # 将每个合计值除以加权和，求出平均值
+    rankings = [(score / totalSim[item], item)
+                for item, score in scores.items()]
+
+    # 按最高值到最低值的顺序，返回评分结果
+    rankings.sort()
+    rankings.reverse()
+    return rankings
