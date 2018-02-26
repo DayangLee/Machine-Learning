@@ -180,3 +180,11 @@ def drawnode(draw, clust, x, y, scaling, labels):
     else:
         # 若为一个叶节点，则绘制节点的标签
         draw.text((x + 5, y - 7), labels[clust.id], (0, 0, 0))
+
+
+def rotatematrix(data):
+    newdata = []
+    for i in range(len(data[0])):
+        newrow = [data[j][i] for j in range(len(data))]
+        newdata.append(newrow)
+    return newdata
